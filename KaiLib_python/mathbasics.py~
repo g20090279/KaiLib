@@ -1,0 +1,29 @@
+import numpy as np
+
+def rand_hermitian_matrix(N):
+    # generate random Hermitian (complex conjugate, A^H = A) matrix A of size M, where each element of the upper triangle follows an identical independent normal distribution, i.e. [A]_{m,n} ~ CN(0,1).
+
+    # upper triangle non-diagonal elements
+
+    num_el_nondiag = int(N*(N-1)/2)
+    print(num_el_nondiag)
+    el_nondiag = 1/np.sqrt(2)*np.random.randn(num_el_nondiag) + 1/np.sqrt(2)*1j*np.random.randn(num_el_nondiag)
+
+    # upper triangle diagonal elements
+    num_el_diag = N
+    el_diag = 1/np.sqrt(2)*np.random.randn(num_el_diag) + 1/np.sqrt(2)*1j*np.random.randn(num_el_diag)
+    
+    # initalize all zero matrix
+    res = np.zeros([N,N], dtype=complex)
+
+    # set diagonal elements
+    np.fill_diagonal(res,el_diag)
+
+    # set non-diagonal elements
+    res[np.triu_indices(N, 1)] = el_nondiag
+    res_tmp = np.conj(res.T);
+    res_tril_ind = np.tril_indices(N,-1)
+    res[res_tril_ind] = res_tmp[res_tril_ind]
+
+    return res
+
