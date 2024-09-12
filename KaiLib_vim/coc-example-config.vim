@@ -1,38 +1,4 @@
-" #######################
-" #   vim-plug module   #
-" #######################
-call plug#begin()
-" The default plugin directory will be as follows:
-"   - Vim (Linux/macOS): '~/.vim/plugged'
-"   - Vim (Windows): '~/vimfiles/plugged'
-"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
-" You can specify a custom plugin directory by passing it as the argument
-"   - e.g. `call plug#begin('~/.vim/plugged')`
-"   - Avoid using standard Vim directory names like 'plugin'
-
-" Make sure you use single quotes
-
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" On-demand loading: loaded when the specified command is executed
-Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
-
-Plug 'junegunn/vim-easy-align'
-Plug 'airblade/vim-gitgutter'
-Plug 'APZelos/blamer.nvim'
-Plug 'tpope/vim-fugitive'
-
-" Initialize plugin system
-" - Automatically executes `filetype plugin indent on` and `syntax enable`.
-call plug#end()
-
-
-
-" ########################
-" #  coc example config  #
-" ########################
-" https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.vim
+" https://raw.githubusercontent.com/neoclide/coc.nvim/master/coc-example.vim
 
 " May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
 " utf-8 byte sequence
@@ -149,14 +115,12 @@ xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> to scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
+nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
 " Use CTRL-S for selections ranges
 " Requires 'textDocument/selectionRange' support of language server
@@ -195,37 +159,4 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
-
-
-" #######################
-" #       Basics        #
-" #######################
-" You want Vim, not vi. When Vim finds a vimrc, 'nocompatible' is set anyway.
-" We set it explicitely to make our position clear!
-set nocompatible
-filetype plugin indent on  " Load plugins according to detected filetype.
-
-" enable color highlighting / comment it because the vim-plug will do this
-syntax on                  " Enable syntax highlighting.
-
-set number 	   	   " enable numbering lines
-set ruler
-set hlsearch 		   " enable highlight the search result
-
-set autoindent             " Indent according to previous line.
-set expandtab              " Use spaces instead of tabs.
-set softtabstop =4         " Tab key indents by 4 spaces.
-set shiftwidth  =4         " >> indents by 4 spaces.
-set shiftround             " >> indents to next multiple of 'shiftwidth'.
-
-let g:coc_filetype_map = {'tex': 'latex'} " Temporarily fix coc-ltex in coc.nvim
-
-" Vim Integration of clang-format
-if has('python')
-  map <C-K> :pyf /opt/homebrew/Cellar/clang-format/18.1.6/share/clang/clang-format.py<cr>
-  imap <C-K> <c-o>:pyf /opt/homebrew/Cellar/clang-format/18.1.6/share/clang/clang-format.py<cr>
-elseif has('python3')
-  map <C-K> :py3f /opt/homebrew/Cellar/clang-format/18.1.6/share/clang/clang-format.py<cr>
-  imap <C-K> <c-o>:py3f /opt/homebrew/Cellar/clang-format/18.1.6/share/clang/clang-format.py<cr>
-endif
 

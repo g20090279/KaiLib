@@ -1,0 +1,121 @@
+" Zekai's Vim Setting
+" Last Revised: Sep. 09, 2024
+
+" {{{........vim-plug
+call plug#begin()
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'junegunn/vim-easy-align'
+Plug 'airblade/vim-gitgutter'
+Plug 'APZelos/blamer.nvim'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'morhetz/gruvbox'
+call plug#end()
+
+" Color scheme
+let g:gruvbox_contrast_dark='hard'
+set background=dark
+colorscheme gruvbox 
+
+" Plugin related settings
+let g:coc_filetype_map = {'tex': 'latex'} " Temporarily fix coc-ltex in coc.nvim
+" }}}
+
+
+
+" {{{........Basics Setting
+" You want Vim, not vi. When Vim finds a vimrc, 'nocompatible' is set anyway.
+" We set it explicitely to make our position clear!
+set nocompatible
+set number 	   	   " enable numbering lines
+set ruler
+set hlsearch 		   " enable highlight the search result
+set cursorline 		" highlight the cursor line
+" }}}
+
+
+
+" {{{ ..........Status Line Setting
+" for more info :help E121
+" so that autocmd didn't stack up and slow down vim
+augroup statusline_startup
+  autocmd!
+  " for more info :help WinEnter and :help BufWinEnter
+  autocmd WinEnter,BufWinEnter * call StatuslineLoad('active')
+  autocmd WinLeave * call StatuslineLoad('inactive')
+augroup END
+
+set laststatus=2        " always show status line
+
+function! StatuslineMode() abort
+
+    let l:currentmode={
+        \ 'n':  'NORMAL',
+        \ 'v':  'VISUAL',
+        \ 'V':  'V·LINE ',
+        \ '\<C-V>': 'V·BLOCK',
+        \ 'i':  'INSERT',
+        \ 'R':  'R',
+        \ 'c':  'COMMAND'}
+
+    let l:modecurrent = mode()
+    " use get() -> fails safely, since ^V doesn't seem to register
+    " 3rd arg is used when return of mode() == 0, which is case with ^V
+    " thus, ^V fails -> returns 0 -> replaced with 'VB'
+    let l:modelist = toupper(get(l:currentmode, l:modecurrent, 'VB'))
+    let l:current_status_mode = l:modelist
+    return l:current_status_mode
+endfunction
+
+" component for active window
+function! StatuslineActive()
+  let l:buffernumber = '%n'
+  let l:modelist = {
+       \ 'n'  : 'NORMAL ',
+       \ 'v'  : 'VISUAL ',
+       \ 'V'  : 'V·Line ',
+       \ "\<C-V>" : 'V·Block ',
+       \ 'i'  : 'INSERT ',
+       \ 'R'  : 'R ',
+       \ 'Rv' : 'V·Replace ',
+       \ 'c'  : 'Command ',
+       \}
+  "let l:mode = '%{StatuslineMode()}'
+  let l:buffernumber = '%n '
+  let l:filename = '%f '
+  let l:mod = '%m '
+  let l:readonly = '%R '
+  let l:sep = '%='
+  let l:percentage = '%p%%'
+  let g:gitbranchcmd = "git branch --show-current 2>/dev/null | tr -d '\n'"
+  " use system() if vim-fugitive not installed
+  let l:git = "%{exists('*FugitiveHead') ? FugitiveStatusline() : system(g:gitbranchcmd)}"
+  let l:sep = '%='
+  return l:buffernumber.l:filename.l:mod.l:readonly.l:git.l:sep.l:percentage
+endfunction
+
+" component for inactive window
+function! StatuslineInactive()
+  " the component goes here
+endfunction
+
+" load statusline using `autocmd` event with this function
+function! StatuslineLoad(mode)
+  if a:mode ==# 'active'
+    " to make it simple, %! is to evaluate the current changes in the window
+    " it can be useful for evaluate current mode in statusline. For more info:
+    " :help statusline.
+    setlocal statusline=%!StatuslineActive()
+  else
+    setlocal statusline=%!StatuslineInactive()
+  endif
+endfunction
+
+" component for both active and inactive window
+function! StatuslineComponent()
+  " your component goes here
+endfunction
+" }}}
+
