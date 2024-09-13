@@ -9,20 +9,28 @@ Plug 'junegunn/vim-easy-align'
 Plug 'airblade/vim-gitgutter'
 Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-fugitive'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'morhetz/gruvbox'
 call plug#end()
 
 " Color scheme
+" set termguicolors " for Windows
 let g:gruvbox_contrast_dark='hard'
 set background=dark
 colorscheme gruvbox 
 
 " Plugin related settings
 let g:coc_filetype_map = {'tex': 'latex'} " Temporarily fix coc-ltex in coc.nvim
+let g:blamer_enabled = 1
+let g:coc_disable_startup_warning = 1
+map <F10> :NERDTreeToggle<CR>
 " }}}
 
+
+
+" {{{........coc.nvim example config
+source ~/.vim/coc-example-config.vim " on Windows: .vim -> vimfiles
 
 
 " {{{........Basics Setting
@@ -33,7 +41,25 @@ set number 	   	   " enable numbering lines
 set ruler
 set hlsearch 		   " enable highlight the search result
 set cursorline 		" highlight the cursor line
+
+" Force Cursor to Be Block Style ###
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
 " }}}
+
+
+
+" {{{........Porject Related Config
+autocmd! vimenter,BufReadPost,BufNewFile * call SetupEnv()
+
+function! SetupEnv()
+    let l:path = expand('%:p')
+    if l:path =~ 'nrsim-dl'
+        source ~/vimfiles/project-config/nrsim-dl/nrsim-dl.vim
+    endif
+endfunction
+" }}}
+
 
 
 
