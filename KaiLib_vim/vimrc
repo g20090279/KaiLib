@@ -124,7 +124,10 @@ endfunction
 
 " component for inactive window
 function! StatuslineInactive()
-  " the component goes here
+  let l:buffernumber = '%n '
+  let l:filename = '%t '
+  let l:mod = '%m'
+  return l:buffernumber.l:filename.l:mod
 endfunction
 
 " load statusline using `autocmd` event with this function
