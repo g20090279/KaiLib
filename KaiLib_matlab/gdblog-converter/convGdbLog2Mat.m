@@ -165,37 +165,56 @@ if ~isempty(logFile)
                     logData = zeros(prod(dimAll),1);
                     isFound = true;
                     isComplete = false;
+                    isError = false;
+                    errMsg = '';
                     cntData = 1; % number of elements of current Eigen::Matrix may be different from maximum number of elements among all Eigen::Matrix
                     cntVec = 1;
+                    currColInd = 1;
+                    currRowInd = 1;
+                    prevRowInd = 1;
+                    iData = 1;
                 end
 
                 if isFound
                     [~,fileName,~] = fileparts(logFile{iFile});
-                    varPrint = regexp(tLinePrev, '^+p(?=rint)* ([\w\d]+)', 'tokens', 'once');
+                    varPrint = regexp(tLinePrev, 'p(?:rint)* ([\w\d]+)', 'tokens', 'once');
                     if isempty(varPrint)
                         fname = [fileName, '_var', num2str(indCommand), '.mat'];
                         disp(['Data $',num2str(indCommand),' is found! Start converting ...']);
                     else
-                        fname = [fileName, '_', varPrint{1}, '.mat'];
+                        fname = [fileName, '_var', num2str(indCommand), '_', varPrint{1}, '.mat'];
                         disp(['Data $',num2str(indCommand),' ',varPrint{1},' is found! Start converting ...']);
                     end
-                    
+
                 end
             end
 
             if isFound  % If data block is found
 
                 if isOneline % No need to read next lines; support different dims in different std::vector
+                    % Extract data
+                    resValue = regexp(tLine, '\[([\d]+)(?:,)?([\d]+)*\][\s]*=[\s]*(?:{_M_value[\s]*=[\s]*)?([\d.-]+)(?:[\s]*\+[\s]*)*([\d.-]+)*(?:[\s]*\*[\s]*I)*', 'tokens');
 
-                    positionEigenMatrix = regexp(tLine, 'Eigen::Matrix<[\w:<>]+,([\d]+),([\d]+),[\w]+>');
-                    
-                    %
-
-                    indLogData = 1;
-                    for iDimVec = 1:numElsStdVec
-                        resValue = regexp(tLine, '\[([\d]+)(?:[,\d]+)*\] = {_M_value = ([\d.-]+)(?: \+ )*([\d.-]+)*(?: \* I)*|\[([\d]+)\] = ([\d.-]+)', 'tokens');
+                    if length(resValue) ~= sum(prod(dimEigMatInVec,2))   % If didn't capture all data
+                        isFound = false;
+                        disp('Error: not enough data!');
                     end
 
+                    for iData = 1:length(resValue)  % Write data
+                        % If this column length is not equal to max column length, jump to max column length
+                        checkDataIndex;
+                        if isError
+                            disp(errMsg);
+                            continue;
+                        end
+
+                        % Write Data, complex-valued or real-valued
+                        writeData;
+                        cntData = cntData + 1;
+
+                        % Check if enough data for this Eigen::Matrix column, and if is complete
+                        checkEnoughDataThisColumn;
+                    end
                 else
                     % Check if out of data block
                     findTextDollar = regexp(tLine, '\$([\d]+) = std::vector of length','tokens', 'once');
@@ -211,7 +230,7 @@ if ~isempty(logFile)
                         isFound = false;
                         disp('Error: data block terminates.');
                     end
-                    
+
                     % Capture Eigen::Matrix data.
                     % Pattern 1 - vector with real valued data:    Eigen::Matrix<int,864,1,ColMajor> (data ptr: 0x25276f0) = {[0] = 3"                                                                                % for one-column data, [0] instead of [0,0]
                     % Pattern 2 - vector with complex-valued data: Eigen::Matrix<std::complex<double>,144,1,ColMajor> (data ptr: 0x1d5a2f0) = {[0] = {_M_value = 0.44140625 + -0.8759765625 * I"                      % _M_value is present for complex-valued data
@@ -227,56 +246,21 @@ if ~isempty(logFile)
                             continue;
                         end
 
-                        if isempty(resValue{1}{2})
-                            currColInd = 1;
-                        else
-                            currColInd = str2double(resValue{1}{2}) + 1;
-                        end
-
-                        if cntData == 1
-                            prevRowInd = dimEigMatInVec(cntVec,1);
-                            currRowInd = 1;
-                        else
-                            prevRowInd = currRowInd;
-                            currRowInd = str2double(resValue{1}{1}) + 1;
-                        end
-
-                        if cntData ~= (cntVec-1)*prod(dimEigMat) + (currColInd-1)*dimEigMat(1) + currRowInd % Track global counter and the corresponding index in a column
-                            isFound = false;
-                            disp("Error: Log data index doesn't match due to data incomplete!");
-                            continue;
-                        end
-
-                        if prevRowInd > currRowInd && prevRowInd ~= dimEigMatInVec(cntVec,1) % New column, check if lack of Eigen::Matrix column data
-                            isFound = false;
-                            disp(['Error: The ', num2str(cntVec), ' std::vector has not enough data!']);
+                        checkDataIndex;
+                        if isError
+                            disp(errMsg);
                             continue;
                         end
 
                         % Write Data, complex-valued or real-valued
-                        if isempty(resValue{1}{4}) % Real-valued
-                            logData(cntData) = str2double(resValue{1}{3});
-                        else % Complex-valued
-                            logData(cntData) = str2double(resValue{1}{3}) + 1i * str2double(resValue{1}{4});
-                        end
+                        writeData
                         cntData = cntData + 1;
 
-                        % Increase index and check if enough data for this Eigen::Matrix column
-                        if mod(cntData-1, dimEigMat(1)) == dimEigMatInVec(cntVec,1) || mod(cntData-1, dimEigMat(1)) == 0 % Enough data for this column
-                            cntData = cntData + dimEigMat(1) - dimEigMatInVec(cntVec,1);
-                            currRowInd = dimEigMat(1);
-                            if currColInd == dimEigMatInVec(cntVec,2)  % If the last column in the std::vector, increase std::vector index
-                                cntVec = cntVec + 1;
-                            end
-                            
-                            % Check if all data are captured
-                            if cntVec == numElsStdVec + 1
-                                isComplete = true;
-                            end
-                        end
+                        % Check if enough data for this Eigen::Matrix column, and if is complete
+                        checkEnoughDataThisColumn
                     end
                 end
-                
+
                 % If data is complete in this data block
                 if isComplete
                     % Reshape Data Back to Origin Dimensions
@@ -289,8 +273,7 @@ if ~isempty(logFile)
 
                     % Write into .mat file
                     disp('Conversion done successfully!');
-                    %dimEigMatInVec
-                    save(fname,'logData');
+                    save(fname,'logData','dimStdVec','dimEigMatInVec');
 
                     % Reset parameters
                     isFound = false;
@@ -310,4 +293,54 @@ if ~isempty(logFile)
 
 end
 
+    function checkDataIndex
+        if isempty(resValue{iData}{2})
+            currColInd = 1;
+        else
+            currColInd = str2double(resValue{iData}{2}) + 1;
+        end
+
+        if cntData == 1
+            prevRowInd = dimEigMatInVec(cntVec,1);
+            currRowInd = 1;
+        else
+            prevRowInd = currRowInd;
+            currRowInd = str2double(resValue{iData}{1}) + 1;
+        end
+
+        if cntData ~= (cntVec-1)*prod(dimEigMat) + (currColInd-1)*dimEigMat(1) + currRowInd % Track global counter and the corresponding index in a column
+            isFound = false;
+            isError = true;
+            errMsg = 'Error: wrong data index!';
+        end
+
+        if prevRowInd > currRowInd && prevRowInd ~= dimEigMatInVec(cntVec,1) % New column, check if lack of Eigen::Matrix column data
+            isFound = false;
+            isError = true;
+            errMsg = ['Error: The ', num2str(cntVec), ' std::vector has not enough data!'];
+        end
+    end
+
+    function writeData
+        if isempty(resValue{iData}{4}) % Real-valued
+            logData(cntData) = str2double(resValue{iData}{3});
+        else % Complex-valued
+            logData(cntData) = str2double(resValue{iData}{3}) + 1i * str2double(resValue{iData}{4});
+        end
+    end
+
+    function checkEnoughDataThisColumn
+        if mod(cntData-1, dimEigMat(1)) == dimEigMatInVec(cntVec,1) || mod(cntData-1, dimEigMat(1)) == 0 % Enough data for this column
+            cntData = cntData + dimEigMat(1) - dimEigMatInVec(cntVec,1);
+            currRowInd = dimEigMat(1);
+            if currColInd == dimEigMatInVec(cntVec,2)  % If the last column in the std::vector, increase std::vector index
+                cntVec = cntVec + 1;
+            end
+
+            % Check if all data are captured
+            if cntVec == numElsStdVec + 1
+                isComplete = true;
+            end
+        end
+    end
 end
