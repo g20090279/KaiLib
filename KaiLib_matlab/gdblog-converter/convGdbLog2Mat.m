@@ -1,4 +1,23 @@
 function convGdbLog2Mat (fileName)
+% CONVGDBLOG2MAT converts logging data from GDB into .mat file.
+% Current limitation:
+%     1. Only the works with C++ Eigen library. The script checks the key word "Eigen::Matrix" to identify a data block. Note that the data has a type structure Vector<Vector<Vector<...Eigen::Matrix<>...>>>.
+%     2. Only the first data block will be processed. Since this script assumes no variable name information in the logging file. For future work, in GDB, with "set trace-commands on", the print command itself is also logged, where we can extract the variable name.
+%     3. Only the case that same length in all dimension is supported. In general, there can be different length for each vector container in the data structure.
+%     4. You can specify the file name in input argument. If not, it only searches for the files with name staring with 'gdb.log'. Therefore, you should set the log file name in GDB as 'gdb.log.<variablename>[.txt]'.
+%
+% Inputs:
+%     - fileName: (optional) a char string specify the file
+% 
+% Outputs:
+%     - The '<fileName>.mat' file.
+%
+% Examples:
+%     - convGdbLog2Mat('~/data/mylog.txt') will convert the file '~/data/mylog.txt'
+%     - convGdbLog2Mat('~/data/') will convert all files under the directory '~/data/' with name prefix 'gdb.log.'.
+%     - Put the script in the same folder as log files, and run the script without any input. This will also convert all the files in the same directory.
+%
+% Version v0.1
 
 logFile = {};
 
@@ -67,7 +86,6 @@ if ~isempty(logFile)
 
                 % Get the GDB command index (e.g. $2), which will be used to name the file if recoding the command is not enabled in GDB
                 indCommand = str2double(isValid{1});
-                isSameDim = false;        % if all the Eigen::Matrix has same dimension for all std::vector
 
                 % Detect if valid Eigen data
                 resStdVec = regexp(tLine, 'std::vector of length ([\d]+), capacity ([\d]+)', 'tokens');        % must not use 'once' flag
@@ -185,7 +203,6 @@ if ~isempty(logFile)
                         fname = [fileName, '_var', num2str(indCommand), '_', varPrint{1}, '.mat'];
                         disp(['Data $',num2str(indCommand),' ',varPrint{1},' is found! Start converting ...']);
                     end
-
                 end
             end
 
