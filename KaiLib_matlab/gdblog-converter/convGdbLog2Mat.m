@@ -1,23 +1,55 @@
 function convGdbLog2Mat (fileName)
-% CONVGDBLOG2MAT converts logging data from GDB into .mat file.
-% Current limitation:
-%     1. Only the works with C++ Eigen library. The script checks the key word "Eigen::Matrix" to identify a data block. Note that the data has a type structure Vector<Vector<Vector<...Eigen::Matrix<>...>>>.
-%     2. Only the first data block will be processed. Since this script assumes no variable name information in the logging file. For future work, in GDB, with "set trace-commands on", the print command itself is also logged, where we can extract the variable name.
-%     3. Only the case that same length in all dimension is supported. In general, there can be different length for each vector container in the data structure.
-%     4. You can specify the file name in input argument. If not, it only searches for the files with name staring with 'gdb.log'. Therefore, you should set the log file name in GDB as 'gdb.log.<variablename>[.txt]'.
+% CONVGDBLOG2MAT converts logging data from GDB into .mat file. It works 
+% with C++ Eigen library, where the data looks like 
+%          Vector < Vector < Vector < ... Eigen::Matrix<> ... > > >,
+% i.e. only one Eigen::Matrix is capsulated by multiple std::vector. Note
+% that the dimension of Eigen::Matrix in each std::vector can be different.
+%
+% This function searches only for the files staring with 'gdb.log.' if the  
+% input argument 'fileName' is not specified.
 %
 % Inputs:
-%     - fileName: (optional) a char string specify the file
+%   - fileName: (optional) A char array specifying the file.
 % 
-% Outputs:
-%     - The '<fileName>.mat' file.
+% Outputs: (in the .mat file)
+%   - logData: The converted data with same dimension
+%   - dimStdVec: A column vector indicates number of elements for all
+%       std::vector.
+%
+%       Example:
+%
+%       dimStdVec = [14; 4; 1] for
+%       Vector<Vector<Vector<Eigen::Matrix<> ...>>>
+%         ^      ^      ^
+%        14      4      1     <- the length of std::vector
+%   - dimEigMatInVec: A two-column matrix, where each row indicates the
+%       dimension of Eigen::Matrix of the corresponding std::vector element.
+%       Therefore, The number of rows equals to the product of all elements
+%       in dimStdVec. Note that the row index starts from the most inner
+%       std::vector.
+%
+%       Example:
+%
+%       dimStdVec = [1,2,3] for
+%       Vector<Vector<Vector<Eigen::Matrix<> ...>>>
+%         ^      ^      ^
+%         1      2      3     <- the length of std::vector
+%
+%       dimEigMatInVec = [
+%           12, 2     --
+%           12, 2      |--> dimStdVec(1,1,:)
+%           12, 2     -- 
+%           14, 1     --
+%           14, 1      |--> dimStdVec(1,2,:)
+%           14, 1     --
+%       ]
 %
 % Examples:
-%     - convGdbLog2Mat('~/data/mylog.txt') will convert the file '~/data/mylog.txt'
-%     - convGdbLog2Mat('~/data/') will convert all files under the directory '~/data/' with name prefix 'gdb.log.'.
-%     - Put the script in the same folder as log files, and run the script without any input. This will also convert all the files in the same directory.
+%   - convGdbLog2Mat('~/data/mylog.txt') will convert the file '~/data/mylog.txt'
+%   - convGdbLog2Mat('~/data/') will convert all files under the directory '~/data/' with name prefix 'gdb.log.'.
+%   - Put the script in the same folder as log files, and run the script without any input. This will also convert all the files in the same directory.
 %
-% Version v0.1
+% Version v0.2
 
 logFile = {};
 
