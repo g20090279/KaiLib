@@ -41,10 +41,16 @@ set number 	   	   " enable numbering lines
 set ruler
 set hlsearch 		   " enable highlight the search result
 set cursorline 		" highlight the cursor line
-
+" set backspace=indent,eol,start   " fix backspace cannot delete problem
 " Force Cursor to Be Block Style ###
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
+" --- use powershell as default shell (only on windows)
+" set shell=C:\\Program\ Files\\PowerShell\\7\\pwsh.exe
+" set shellcmdflag=-command
+" set shellquote=\"
+" set shellxquote=
+" ---
 " }}}
 
 
