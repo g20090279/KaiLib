@@ -23,6 +23,9 @@ When we implement modules in EXPSim, we need to use the data from NRSim to verif
 ## CHANGELOG
 
 - v0.2
+  - fix error when Eigen::Matrix is not capsulated by std::vector
+
+- v0.2
   - Supports multi-line data and one-line data.
   - Supports varying length of Eigen::Matrix
 
