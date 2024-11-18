@@ -5,29 +5,39 @@
 call plug#begin()
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'junegunn/vim-easy-align'
 Plug 'airblade/vim-gitgutter'
 Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'morhetz/gruvbox'
+Plug 'junegunn/seoul256.vim'
+"Plug 'morhetz/gruvbox'
 call plug#end()
-
-" Color scheme
-" set termguicolors " for Windows
-let g:gruvbox_contrast_dark='hard'
-set background=dark
-colorscheme gruvbox 
 
 " Plugin related settings
 let g:coc_filetype_map = {'tex': 'latex'} " Temporarily fix coc-ltex in coc.nvim
-let g:blamer_enabled = 1
+"let g:blamer_enabled = 1
 let g:coc_disable_startup_warning = 1
 map <F10> :NERDTreeToggle<CR>
 " }}}
 
+" {{{........Color scheme - general
+" set termguicolors " for Windows
+" }}}
 
+" {{{........Color scheme - morhetz/gruvbox
+"let g:gruvbox_contrast_dark='hard'
+"set background=dark
+"colorscheme gruvbox 
+" }}}
+
+" {{{........Color scheme - junegunn/seoul256.vim
+let g:seoul256_background = 233
+colorscheme seoul256
+set background=dark
+highlight CursorLine ctermbg=235
+" }}}
 
 " {{{........coc.nvim example config
 source ~/.vim/coc-example-config.vim " on Windows: .vim -> vimfiles
@@ -116,24 +126,28 @@ function! StatuslineActive()
        \}
   "let l:mode = '%{StatuslineMode()}'
   let l:buffernumber = '%n '
-  let l:filename = '%f '
+  let l:filename = '%t '
   let l:mod = '%m '
   let l:readonly = '%R '
   let l:sep = '%='
   let l:percentage = '%p%%'
   let g:gitbranchcmd = "git branch --show-current 2>/dev/null | tr -d '\n'"
   " use system() if vim-fugitive not installed
-  let l:git = "%{exists('*FugitiveHead') ? FugitiveStatusline() : system(g:gitbranchcmd)}"
+  let l:git = "%{exists('*FugitiveHead') ? FugitiveStatusline() : system(g:gitbranchcmd)} "
   let l:sep = '%='
-  return l:buffernumber.l:filename.l:mod.l:readonly.l:git.l:sep.l:percentage
+  return l:buffernumber.l:git.l:filename.l:mod.l:readonly.l:sep.l:percentage
 endfunction
 
 " component for inactive window
 function! StatuslineInactive()
   let l:buffernumber = '%n '
+  let g:gitbranchcmd = "git branch --show-current 2>/dev/null | tr -d '\n'"
+  let l:git = "%{exists('*FugitiveHead') ? FugitiveStatusline() : system(g:gitbranchcmd)} "
   let l:filename = '%t '
   let l:mod = '%m'
-  return l:buffernumber.l:filename.l:mod
+  let l:sep = '%='
+  let l:percentage = '%p%%'
+  return l:buffernumber.l:git.l:filename.l:mod.l:sep.l:percentage
 endfunction
 
 " load statusline using `autocmd` event with this function
