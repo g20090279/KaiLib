@@ -66,14 +66,14 @@ let &t_EI = "\e[2 q"
 
 
 " {{{........Porject Related Config
-autocmd! vimenter,BufReadPost,BufNewFile * call SetupEnv()
+"autocmd! vimenter,BufReadPost,BufNewFile * call SetupEnv()
 
-function! SetupEnv()
-    let l:path = expand('%:p')
-    if l:path =~ 'nrsim-dl'
-        source ~/vimfiles/project-config/nrsim-dl/nrsim-dl.vim
-    endif
-endfunction
+"function! SetupEnv()
+"    let l:path = expand('%:p')
+"    if l:path =~ 'nrsim-dl'
+"        source ~/vimfiles/project-config/nrsim-dl/nrsim-dl.vim
+"    endif
+"endfunction
 " }}}
 
 
