@@ -30,7 +30,7 @@ map <F9> :TagbarToggle<CR>
 map <F10> :NERDTreeToggle<CR>
 
 " FZF setting on Windows
-let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always {}"
+" let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always {}"
 " }}}
 
 " {{{........Color scheme - general
@@ -98,7 +98,6 @@ augroup END
 set laststatus=2        " always show status line
 
 function! StatuslineMode() abort
-
     let l:currentmode={
                 \ 'n':  'NORMAL',
                 \ 'v':  'VISUAL',
@@ -117,7 +116,10 @@ function! StatuslineMode() abort
     return l:current_status_mode
 endfunction
 
-" component for active window
+" Statusline Component for Active Window
+" Required Plugins:
+" - vim-fugitive
+" - tagbar
 function! StatuslineActive()
     let l:buffernumber = '%n'
     let l:modelist = {
@@ -140,11 +142,12 @@ function! StatuslineActive()
     let g:gitbranchcmd = "git branch --show-current 2>/dev/null | tr -d '\n'"
     " use system() if vim-fugitive not installed
     let l:git = "%{exists('*FugitiveHead') ? FugitiveStatusline() : system(g:gitbranchcmd)} "
+    let l:tag = "%{tagbar#currenttag('[%s] ','')}"
     let l:sep = '%='
-    return l:buffernumber.l:git.l:filename.l:mod.l:readonly.l:sep.l:percentage
+    return l:buffernumber.l:git.l:filename.l:mod.l:readonly.l:sep.l:tag.l:percentage
 endfunction
 
-" component for inactive window
+" Status Component for Inactive Window
 function! StatuslineInactive()
     let l:buffernumber = '%n '
     let g:gitbranchcmd = "git branch --show-current 2>/dev/null | tr -d '\n'"
