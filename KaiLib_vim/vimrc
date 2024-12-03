@@ -1,6 +1,8 @@
 " Zekai's Vim Setting
 " Last Revised: Dec. 03, 2024
 
+set term=screen-256color
+
 " {{{........vim-plug
 call plug#begin()
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -11,16 +13,24 @@ Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/tagbar'
+Plug 'bfrg/vim-c-cpp-modern'
 Plug 'junegunn/seoul256.vim'
-"Plug 'morhetz/gruvbox'
 call plug#end()
 
 " Plugin related settings
 let g:coc_filetype_map = {'tex': 'latex'} " Temporarily fix coc-ltex in coc.nvim
-"let g:blamer_enabled = 1
 let g:coc_disable_startup_warning = 1
+
+" for vim-c-cpp-highlight plugin
+let g:cpp_member_highlight = 1
+let g:cpp_attributes_highlight = 1
+let g:cpp_simple_highlight = 1
+
 map <F9> :TagbarToggle<CR>
 map <F10> :NERDTreeToggle<CR>
+
+" FZF setting on Windows
+let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always {}"
 " }}}
 
 " {{{........Color scheme - general
@@ -45,13 +55,11 @@ source ~/.vim/coc-example-config.vim " on Windows: .vim -> vimfiles
 
 
 " {{{........Basics Setting
-" You want Vim, not vi. When Vim finds a vimrc, 'nocompatible' is set anyway.
-" We set it explicitely to make our position clear!
-set nocompatible
 set number 	   	   " enable numbering lines
-set ruler
+set ruler                  " show the line and column number of the cursor position
 set hlsearch 		   " enable highlight the search result
-set cursorline 		" highlight the cursor line
+set cursorline 		   " highlight the cursor line
+" set backspace=indent,eol,start " for Windows
 set shiftwidth=4
 set softtabstop=4
 set expandtab
