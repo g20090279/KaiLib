@@ -1,0 +1,10 @@
+[includeIf "gitdir:~/workspace/github/"]
+    path = ~/.gitconfig-gh
+[includeIf "gitdir:~/workspace/gitlab/"]
+    path = ~/.gitconfig-gl
+[includeIf "gitdir:~/workspace/gitlab-bc/"]
+    path = ~/.gitconfig-bc
+
+[safe]
+	directory = /storage/E665-0028/workspace/github/
+	directory = /storage/E665-0028/workspace/github/KaiLib

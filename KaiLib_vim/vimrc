@@ -1,5 +1,5 @@
 " Zekai's Vim Setting
-" Last Revised: Dec. 03, 2024
+" Last Revised: Jan. 01, 2025
 
 set term=screen-256color
 
@@ -15,6 +15,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'preservim/tagbar'
 Plug 'bfrg/vim-c-cpp-modern'
 Plug 'junegunn/seoul256.vim'
+"Plug 'aklt/plantuml-syntax'
+"Plug 'tyru/open-browser.vim'
+"Plug 'weirongxu/plantuml-previewer.vim'
 call plug#end()
 
 " Plugin related settings
@@ -26,7 +29,8 @@ let g:cpp_member_highlight = 1
 let g:cpp_attributes_highlight = 1
 let g:cpp_simple_highlight = 1
 
-map <F9> :TagbarToggle<CR>
+map <F8> :TagbarToggle<CR>
+map <F9> :NERDTreeFind<CR>
 map <F10> :NERDTreeToggle<CR>
 
 " FZF setting on Windows
