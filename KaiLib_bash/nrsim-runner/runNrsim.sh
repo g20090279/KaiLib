@@ -11,7 +11,7 @@ where:
 -a\t specify a autorun file in the working directory (NRSim version). The searching directory is /path/to/the/nrsim/version/Scn/autoRuns/.
 -b\t build NRSim in debug mode
 -c\t build NRSim in release mode
--d\t run NRSim debug mode for debugging with GDB setting file `launch_debug.gdb`.
+-d\t Default mode: run NRSim debug mode for debugging with GDB setting file launch_debug.gdb.
 -e\t run NRSim debug mode for EXPSim.
   \t \t - An GDB setting file is needed (default 'launch_expsim.gdb').
   \t \t - An autorun file needs to be specified explicitly.
@@ -21,8 +21,7 @@ where:
 -l\t specify a logging file in the working directory (NRSim version)
 -m\t run NRSim release mode with specified autorun file (f) with subfix starting at (s) and ending at (e). Ex: rnrsim -m lteStandardRegTest,1,4
 -r\t run NRSim release mode
--v\t specify a NRSim version as a working directory. The default one is nrsim-dl. This feature enables existence of multiple NRSim executables, say, from different branches
-default run gdb with launch.gdb"
+-v\t specify a NRSim version as a working directory. The default one is nrsim-dl. This feature enables existence of multiple NRSim executables, say, from different branches"
 
 # Get the current directory name
 currDictory=$(basename "$PWD")
