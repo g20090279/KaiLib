@@ -39,3 +39,6 @@ km.set("n", "<leader>gs", ":Git<CR>" , { noremap = true, silent = true, desc = "
 
 -- Keymaps for maximize.nvim
 km.set("n", "<leader>m", ":Maximize<CR>", { noremap = true, silent = true, desc = "Maximize current window" })
+
+-- Keymaps for open files
+km.set('n', '<leader>os', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = true })
