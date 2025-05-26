@@ -42,3 +42,16 @@ km.set("n", "<leader>m", ":Maximize<CR>", { noremap = true, silent = true, desc 
 
 -- Keymaps for open files
 km.set('n', '<leader>os', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = true })
+
+-- Keymaps for .c/.cpp/.h/.hpp files
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "c", "cpp", "objc", "objcpp", "h", "hpp" },
+    callback = function(args)
+        vim.api.nvim_buf_set_keymap(args.buf, "n", "gR", "<cmd>ClangdRename<CR>", {noremap = true, silent = true})
+        vim.api.nvim_buf_set_keymap(args.buf, "n", "gA", "<cmd>ClangdCodeAction<CR>", { noremap = true, silent = true })
+        vim.api.nvim_buf_set_keymap(args.buf, "n", "gF", "<cmd>ClangdFormat<CR>", { noremap = true, silent = true })
+        vim.api.nvim_buf_set_keymap(args.buf, "n", "gI", "<cmd>ClangdImplementations<CR>", { noremap = true, silent = true })
+        vim.api.nvim_buf_set_keymap(args.buf, "n", "gD", "<cmd>ClangdTypeHierarchy<CR>", { noremap = true, silent = true })
+        vim.api.nvim_buf_set_keymap(args.buf, "n", "gH", "<cmd>ClangdSwitchSourceHeader<CR>", { noremap = true, silent = true })
+    end,
+})
