@@ -9,7 +9,6 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "gk", vim.lsp.buf.hover, opts)
     vim.keymap.set("n", "gsh", vim.lsp.buf.signature_help, opts)
     vim.keymap.set("n", "gs", vim.lsp.buf.workspace_symbol, opts)
-    vim.keymap.set("n", "gh", "<cmd>ClangdSwitchSourceHeader<CR>", opts)
 
     if client.server_capabilities.documentSymbolProvider then
         require("nvim-navic").attach(client, bufnr)
