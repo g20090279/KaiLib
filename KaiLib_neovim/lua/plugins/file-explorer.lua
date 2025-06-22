@@ -1,6 +1,7 @@
 return {
-    { 
-        "nvim-tree/nvim-tree.lua",
-        dependencies = { "nvim-tree/nvim-web-devicons" },  -- optional for icon support
+    {
+        "preservim/nerdtree",
+        cmd = { "NERDTreeToggle", "NERDTreeFind" },
+        dependencies = { "Xuyuanp/nerdtree-git-plugin", "ryanoasis/vim-devicons" },  -- optional for icon support
     },
 }
