@@ -32,16 +32,14 @@ km.set("n", "<leader>fk", "<cmd>FzfLua keymaps<CR>", { desc = "Fuzzy find keymap
 km.set("n", "<leader>fr", "<cmd>FzfLua buffers<CR>", { desc = "Fuzzy find recent files" })
 
 -- Keymaps for NvimTree
-km.set("n", "<leader>e", ":NvimTreeFindFileToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
-
--- Keymaps for fugitive
-km.set("n", "<leader>gs", ":Git<CR>" , { noremap = true, silent = true, desc = "Git status" })
+km.set("n", "<leader>ee", ":NERDTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
+km.set("n", "<leader>ef", ":NERDTreeFind<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
 
 -- Keymaps for maximize.nvim
 km.set("n", "<leader>m", ":Maximize<CR>", { noremap = true, silent = true, desc = "Maximize current window" })
 
--- Keymaps for open files
-km.set('n', '<leader>os', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = true })
+-- Keymaps for open nvim setting files
+km.set('n', '<leader>nvim', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = true })
 
 -- Keymaps for .c/.cpp/.h/.hpp files
 vim.api.nvim_create_autocmd("FileType", {
