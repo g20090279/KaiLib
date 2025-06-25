@@ -31,7 +31,7 @@ km.set("n", "<leader>ft", "<cmd>FzfLua btags<CR>", { desc = "Fuzzy search buffer
 km.set("n", "<leader>fk", "<cmd>FzfLua keymaps<CR>", { desc = "Fuzzy find keymaps" })
 km.set("n", "<leader>fr", "<cmd>FzfLua buffers<CR>", { desc = "Fuzzy find recent files" })
 
--- Keymaps for NvimTree
+-- Keymaps for NERDTree
 km.set("n", "<leader>ee", ":NERDTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
 km.set("n", "<leader>ef", ":NERDTreeFind<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
 
