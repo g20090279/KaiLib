@@ -45,11 +45,9 @@ km.set('n', '<leader>nvim', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = t
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "c", "cpp", "objc", "objcpp", "h", "hpp" },
     callback = function(args)
-        vim.api.nvim_buf_set_keymap(args.buf, "n", "gR", "<cmd>ClangdRename<CR>", {noremap = true, silent = true})
-        vim.api.nvim_buf_set_keymap(args.buf, "n", "gA", "<cmd>ClangdCodeAction<CR>", { noremap = true, silent = true })
-        vim.api.nvim_buf_set_keymap(args.buf, "n", "gF", "<cmd>ClangdFormat<CR>", { noremap = true, silent = true })
-        vim.api.nvim_buf_set_keymap(args.buf, "n", "gI", "<cmd>ClangdImplementations<CR>", { noremap = true, silent = true })
-        vim.api.nvim_buf_set_keymap(args.buf, "n", "gD", "<cmd>ClangdTypeHierarchy<CR>", { noremap = true, silent = true })
         vim.api.nvim_buf_set_keymap(args.buf, "n", "gH", "<cmd>ClangdSwitchSourceHeader<CR>", { noremap = true, silent = true })
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition)
+        vim.keymap.set("n", "gy", vim.lsp.buf.type_definition)
+        vim.keymap.set("n", "gs", vim.lsp.buf.workspace_symbol)
     end,
 })
