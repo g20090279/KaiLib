@@ -17,7 +17,6 @@ return {
             vim.g.bullets_enabled_file_types = { "markdown", "text", "gitcommit", "scratch" }
         end,
     },
-    {
-        "tpope/vim-surround",
-    }
+    { "tpope/vim-surround", },
+    { "mbbill/undotree", },
 }

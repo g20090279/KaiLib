@@ -30,6 +30,14 @@ km.set("n", "<leader>fh", "<cmd>FzfLua help_tags<CR>", { desc = "Fuzzy find help
 km.set("n", "<leader>ft", "<cmd>FzfLua btags<CR>", { desc = "Fuzzy search buffer tags" })
 km.set("n", "<leader>fk", "<cmd>FzfLua keymaps<CR>", { desc = "Fuzzy find keymaps" })
 km.set("n", "<leader>fr", "<cmd>FzfLua buffers<CR>", { desc = "Fuzzy find recent files" })
+km.set("n", "<leader>fgf", "<cmd>FzfLua git_files<CR>", { desc = "Fuzzy find git list files" })
+km.set("n", "<leader>fgd", "<cmd>FzfLua git_diff<CR>", { desc = "Fuzzy find git diff {ref}" })
+km.set("n", "<leader>fgc", "<cmd>FzfLua git_commits<CR>", { desc = "Fuzzy find git commit log of the project" })
+km.set("n", "<leader>fgv", "<cmd>FzfLua git_bcommits<CR>", { desc = "Fuzzy find git commit log of the buffer" })
+km.set("n", "<leader>fgb", "<cmd>FzfLua git_blame<CR>", { desc = "Fuzzy find git blame of the buffer" })
+km.set("n", "<leader>fgs", "<cmd>FzfLua git_stash<CR>", { desc = "Fuzzy find git stash" })
+km.set("n", "<leader>fgt", "<cmd>FzfLua git_tags<CR>", { desc = "Fuzzy find git tags" })
+km.set("n", "<leader>fga", "<cmd>FzfLua git_branches<CR>", { desc = "Fuzzy find git branches" })
 
 -- Keymaps for NERDTree
 km.set("n", "<leader>ee", ":NERDTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
@@ -51,3 +59,6 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.keymap.set("n", "gs", vim.lsp.buf.workspace_symbol)
     end,
 })
+
+-- Keymaps for undo tree
+vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
