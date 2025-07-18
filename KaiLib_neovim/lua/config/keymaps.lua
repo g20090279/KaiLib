@@ -62,3 +62,15 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Keymaps for undo tree
 vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+
+---------------------------
+--- NVIM System Keymaps ---
+---------------------------
+-- Keymaps for toggle line number and relative line number
+vim.keymap.set('n', '<leader>nn', function()
+    if vim.wo.number == true and vim.wo.relativenumber == true then
+        vim.wo.relativenumber = false
+    else
+        vim.wo.relativenumber = true
+    end
+end, { desc = "Toggle line number and relative line number" })

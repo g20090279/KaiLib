@@ -4,12 +4,15 @@ return {
         cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
         ft = "markdown",
         run = 'cd app && npm install',  -- Make sure to install dependencies
-        config = function()
-        end
+        ft = { "markdown" },
     },
     {
-      "MeanderingProgrammer/render-markdown.nvim",
-      ft = { "markdown", "codecompanion" }
+        "dhruvasagar/vim-table-mode",
+        ft = { "rst", "markdown", "text" },
+    },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {},
     },
     {
         "bullets-vim/bullets.vim",
@@ -19,4 +22,16 @@ return {
     },
     { "tpope/vim-surround", },
     { "mbbill/undotree", },
+    {
+        'windwp/nvim-autopairs',
+        event = "InsertEnter",
+        config = true
+    },
+    {
+        "L3MON4D3/LuaSnip",
+        dependencies = {
+            "rafamadriz/friendly-snippets",
+        },
+        --build = "make install_jsregexp"
+    }
 }
