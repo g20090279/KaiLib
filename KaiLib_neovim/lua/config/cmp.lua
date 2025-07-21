@@ -6,6 +6,7 @@ luasnip.filetype_extend("markdown", { "tex" })
 
 -- Load snippets from friendly-snippets (if you have it installed).
 require("luasnip.loaders.from_vscode").lazy_load()
+require("luasnip.loaders.from_lua").lazy_load({ paths = vim.fn.stdpath("config") .. "/lua/snippets" }) -- Adjust the path to your snippets directory
 
 -- Setup nvim-cmp.
 cmp.setup({
