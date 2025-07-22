@@ -15,12 +15,12 @@ return {
                     lualine_b = { 'branch', 'diff', 'diagnostics' },
                     lualine_c = {
                         { 'filename', path = 1 }, -- 0 = just name, 1 = relative path, 2 = full path
-                        { 
-                            'navic', 
-                            cond = function()
-                                return package.loaded['nvim-navic'] and require('nvim-navic').is_available()
-                            end
-                        },
+                        -- { 
+                        --     'navic', 
+                        --     cond = function()
+                        --         return package.loaded['nvim-navic'] and require('nvim-navic').is_available()
+                        --     end
+                        -- },
                     },
                     lualine_x = { 'encoding', 'fileformat', 'filetype' },
                     lualine_y = { 'progress' },
@@ -32,12 +32,12 @@ return {
     {
         "SmiteshP/nvim-navic",
         dependencies = { "neovim/nvim-lspconfig" },
-        config = function()
-            require('nvim-navic').setup({
-                highlight = true,
-                separator = " > ",
-                depth_limit = 5,
-            })
-        end
+        -- config = function()
+        --     require('nvim-navic').setup({
+        --         highlight = true,
+        --         separator = " > ",
+        --         depth_limit = 5,
+        --     })
+        -- end
     }
 }

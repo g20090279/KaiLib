@@ -2,9 +2,12 @@ require("mason-lspconfig").setup({
     ensure_installed = { "lua_ls", "pyright", "clangd" }
 })
 
+local navic = require("nvim-navic")
+navic.setup()
+
 local on_attach = function(client, bufnr)
     if client.server_capabilities.documentSymbolProvider then
-        require("nvim-navic").attach(client, bufnr)
+        navic.attach(client, bufnr)
     end
 end
 
@@ -18,3 +21,5 @@ for _, server in ipairs(servers) do
         capabilities = capabilities,
     }
 end
+
+vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
