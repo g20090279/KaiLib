@@ -1,6 +1,8 @@
 local km = vim.keymap
 
--- Keymaps for copying file name and path to clipboard
+-----------------------------------------------------------
+--  Keymaps for copying file name and path to clipboard  --
+-----------------------------------------------------------
 km.set("n", "<leader>cf", function()
         vim.fn.setreg('+', vim.fn.expand('%'))
         print('Copied file name to clipboard: ' .. vim.fn.expand('%'))
@@ -22,7 +24,9 @@ km.set("n", "<leader>cP", function()
         print('Copied absolute path to clipboard: ' .. vim.fn.expand('%:p:h'))
     end, { desc = "Copy absolute path to clipboard" })
 
--- Keymaps for FzfLua
+--------------------------
+--  Keymaps for FzfLua  --
+--------------------------
 km.set("n", "<leader>ff", "<cmd>FzfLua files<CR>", { desc = "Fuzzy find files" })
 km.set("n", "<leader>fg", "<cmd>FzfLua live_grep_native<CR>", { desc = "Fuzzy find text" })
 km.set("n", "<leader>fb", "<cmd>FzfLua buffers<CR>", { desc = "Fuzzy find buffers" })
@@ -40,17 +44,15 @@ km.set("n", "<leader>fgs", "<cmd>FzfLua git_stash<CR>", { desc = "Fuzzy find git
 km.set("n", "<leader>fgt", "<cmd>FzfLua git_tags<CR>", { desc = "Fuzzy find git tags" })
 km.set("n", "<leader>fga", "<cmd>FzfLua git_branches<CR>", { desc = "Fuzzy find git branches" })
 
--- Keymaps for NERDTree
+----------------------------
+--  Keymaps for NERDTree  --
+----------------------------
 km.set("n", "<leader>ee", ":NERDTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
 km.set("n", "<leader>ef", ":NERDTreeFind<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
 
--- Keymaps for maximize.nvim
-km.set("n", "<leader>m", ":Maximize<CR>", { noremap = true, silent = true, desc = "Maximize current window" })
-
--- Keymaps for open nvim setting files
-km.set('n', '<leader>nvim', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = true })
-
--- Keymaps for .c/.cpp/.h/.hpp files
+-----------------------------------------
+--  Keymaps for .c/.cpp/.h/.hpp files  --
+-----------------------------------------
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "c", "cpp", "objc", "objcpp", "h", "hpp" },
     callback = function(args)
@@ -61,12 +63,17 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- Keymaps for undo tree
+-----------------------------
+--  Keymaps for undo tree  --
+-----------------------------
 vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
 
 ---------------------------
---- NVIM System Keymaps ---
+--  NVIM System Keymaps  --
 ---------------------------
+--  Keymaps for open nvim setting files
+km.set('n', '<leader>nvim', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = true })
+
 -- Keymaps for toggle line number and relative line number
 vim.keymap.set('n', '<leader>nn', function()
     if vim.wo.number == true and vim.wo.relativenumber == true then
@@ -75,3 +82,31 @@ vim.keymap.set('n', '<leader>nn', function()
         vim.wo.relativenumber = true
     end
 end, { desc = "Toggle line number and relative line number" })
+
+------------------------------------------------
+--  Keymaps for DAP (Debug Adapter Protocol)  --
+------------------------------------------------
+-- Continue debugging (F5)
+km.set('n', '<F5>', function() require('dap').continue() end, { noremap = true, silent = true })
+-- Pause debugging (F6)
+km.set('n', '<F6>', function() require('dap').pause() end, { noremap = true, silent = true })
+-- Step into (F7)
+km.set('n', '<F11>', function() require('dap').step_into() end, { noremap = true, silent = true })
+-- Step over (F8)
+km.set('n', '<F10>', function() require('dap').step_over() end, { noremap = true, silent = true })
+-- Step out (F9)
+km.set('n', '<F9>', function() require('dap').step_out() end, { noremap = true, silent = true })
+-- Toggle breakpoint (F10)
+km.set('n', '<Leader>b', function() require('dap').toggle_breakpoint() end, { noremap = true, silent = true })
+-- Toggle conditional breakpoint (Leader + b)
+km.set('n', '<Leader>B', function() require('dap').set_breakpoint(vim.fn.input("Breakpoint condition: ")) end, { noremap = true, silent = true })
+-- Run to cursor (Leader + rc)
+km.set('n', '<F7>', function() require('dap').run_to_cursor() end, { noremap = true, silent = true })
+-- Terminate debugging
+km.set('n', '<Leader>de', function() require('dap').terminate() end, { noremap = true, silent = true })
+-- Open DAP REPL
+km.set('n', '<Leader>dp', function() require('dap').repl.open() end, { noremap = true, silent = true })
+-- Open DAP UI
+km.set('n', '<Leader>du', function() require('dapui').toggle() end, { noremap = true, silent = true })
+
+
