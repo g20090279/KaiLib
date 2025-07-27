@@ -1,3 +1,6 @@
-.DS_Store
-*.asv
-*.swp
+**/.DS_Store
+**/bin
+**/lib
+pyvenv.cfg
+**/test_cpp_debugger.dSYM
+**/test_cpp_debugger
