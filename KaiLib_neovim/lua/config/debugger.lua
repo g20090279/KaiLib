@@ -1,4 +1,33 @@
-require("dapui").setup()
+require("dapui").setup({
+    layouts = {
+        {
+            elements = {
+                { id = "scopes", size = 1},
+            },
+            size = 40,  -- width of Left panel
+            position = "left",
+        },
+        {
+            elements = {
+                { id = "repl", size = 1 },
+                -- { id = "console", size = 0.5 },
+            },
+            size = 10,   -- hight of bottome panel
+            position = "bottom"
+        },
+    },
+})
+
+-- Make REPL nice to read
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "dap-repl",
+    callback = function()
+        vim.opt_local.wrap = true   -- wrap long lines
+        vim.opt_local.linebreak = true    -- wrap at word boundaries
+        vim.opt_local.breakindent = true  -- indent wrapped lines
+        vim.opt_local.scrollback = 10000  -- large scrollback
+    end,
+})
 
 local dap = require('dap')
 
@@ -14,13 +43,13 @@ end
 -- Configure dap for C/C++/Rust
 dap.adapters.gdb = {
     type = 'executable',
-    command = '/path/to/gdb',
+    command = '/nfs/home/<username>/.local/gdb/bin/gdb',
     args = { "--interpreter=dap" }
 }
 
 dap.adapters.cppdbg = {
     type = 'executable',
-    command = '/path/to/.vscode-server/extensions/ms-vscode.cpptools-1.26.3-linux-x64/debugAdapters/bin/OpenDebugAD7',
+    command = '/nfs/home/<username>/.vscode-server/extensions/ms-vscode.cpptools-1.26.3-linux-x64/debugAdapters/bin/OpenDebugAD7',
     id = 'cppdbg',
 }
 
@@ -45,20 +74,58 @@ dap.adapters.codelldb = {
     },
 }
 
+local datetime = os.date('%Y%m%d%H%M%S')
+local logfile = "gdb.log." .. datetime .. ".txt"
+
 dap.configurations.cpp = {
     {
-        name = 'Debug Program',
+        name = 'Debug NRSim',
         type = 'cppdbg',
         request = 'launch',
         cwd = get_project_root(),
-        program = '/path/to/your/debug/program',
-        args = { "your-args" },
+        program = 'ns_dbg',
+        -- args = { "config_file" },
+        -- args = { "config_file" },
+        args = { "config_file" },
+        -- args = { "config_file" },
+        -- args = { "config_file" },
+        exterminalConsole = true,  -- suppress the warning gdb failed to set controlling terminal
         setupCommands = {
             {
                 description = "Enable pretty-printing for gdb",
                 text = "-enable-pretty-printing",
                 ignoreFailures = true,
-            }
+            },
+            {
+                description = 'Load local .gdbinit',
+                text = "source ~/.gdbinit",
+                ignoreFailures = true
+            },
+            {
+                description = "Set GDB log file",
+                text = "-gdb-set logging file " .. logfile,
+                ignoreFailures = true
+            },
+            {
+                description = "Overwrite log file",
+                text = "set logging overwrite on",
+                ignoreFailures = true
+            },
+            {
+                description = "Disable pagination",
+                text = "set pagination off",
+                ignoreFailures = true
+            },
+            {
+                description = "Show all array elements",
+                text = "set print elements 0",
+                ignoreFailures = true
+            },
+            {
+                description = "Trace commands",
+                text = "set trace-commands on",
+                ignoreFailures = true
+            },
         },
     },
     {
@@ -78,8 +145,8 @@ dap.configurations.cpp = {
         },
         environment = {
             {
-                name = "dsp_vec_env_name",
-                value = "/pah/to/your/dsp/vector",
+                name = "DSP_TEST_VECTOR_DIR",
+                value = "/nfs/home/<username>/workspace/t-v-s",
             }
         },
     },
