@@ -27,5 +27,6 @@ return {
             words = { enabled = true },
         },
     },
-    { "MunifTanjim/nui.nvim" }
+    { "MunifTanjim/nui.nvim" },
+    { "mhinz/vim-startify" },
 }
