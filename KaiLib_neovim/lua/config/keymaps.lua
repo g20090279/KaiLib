@@ -162,3 +162,17 @@ km.set("n", "<leader>ncd", function()
   vim.cmd("cd " .. target_dir)
   print("Working directory changed to: " .. target_dir)
 end, { desc = "Change cwd to Git root or current file directory" })
+
+---------------------------------
+--  Keymaps for vim-illuminate --
+---------------------------------
+-- Go to next reference
+vim.keymap.set("n", "]i", function()
+  require("illuminate").goto_next_reference(true)
+end, { desc = "Next Reference" })
+
+-- Go to previous reference
+vim.keymap.set("n", "[i", function()
+  require("illuminate").goto_prev_reference(true)
+end, { desc = "Prev Reference" })
+

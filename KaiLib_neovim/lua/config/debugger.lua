@@ -151,6 +151,53 @@ dap.configurations.cpp = {
         },
     },
     {
+        name = 'Debug asip',
+        type = 'cppdbg',
+        request = 'launch',
+        cwd = get_project_root(),
+        -- program = function()
+        --     return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        -- end,
+        program = "/path/to/binary",
+        setupCommands = {
+            {
+                description = "Enable pretty-printing for gdb",
+                text = "-enable-pretty-printing",
+                ignoreFailures = true,
+            },
+            {
+                description = 'Load local .gdbinit',
+                text = "source /path/to/.gdbinit",
+                ignoreFailures = true
+            },
+            {
+                description = "Set GDB log file",
+                text = "-gdb-set logging file " .. logfile,
+                ignoreFailures = true
+            },
+            {
+                description = "Overwrite log file",
+                text = "set logging overwrite on",
+                ignoreFailures = true
+            },
+            {
+                description = "Disable pagination",
+                text = "set pagination off",
+                ignoreFailures = true
+            },
+            {
+                description = "Show all array elements",
+                text = "set print elements 0",
+                ignoreFailures = true
+            },
+            {
+                description = "Trace commands",
+                text = "set trace-commands on",
+                ignoreFailures = true
+            },
+        },
+    },
+    {
         name = 'Launch GDB',
         type = 'gdb',
         request = 'launch',
@@ -173,5 +220,37 @@ dap.configurations.cpp = {
 }
 
 -- Configure dap for Python
-require("dap-python").setup("python3")
-require("dap-python").test_runner = "pytest"
+require("dap-python").setup("~/.virtualenvs/debugpy/bin/python") -- path to python with debugpy
+---
+-- mkdir ~/.virtualenvs
+-- cd ~/.virtualenvs
+-- python3 -m venv debugpy
+-- debugpy/bin/python -m pip install debugpy
+---
+
+require('dap').configurations.python = {
+    {
+        name = "Launch debugpy",
+        type = 'python',
+        request = 'launch',
+        cwd = get_project_root(),
+        program = "${file}",
+        console = "integratedTerminal",  -- or "externalTerminal" if needed
+        pythonPath = function()
+            return '~/.virtualenvs/debugpy/bin/python'
+        end,
+    },
+    {
+        name = 'Debug Autorun',
+        type = 'python',
+        request = 'launch',
+        cwd = get_project_root(),
+        program = "${file}",
+        args = { "-r", "-b" },  -- ← Your script's arguments
+        console = "integratedTerminal",  -- or "externalTerminal" if needed
+        pythonPath = function()
+            return "/path/to/home/.virtualenvs/debugpy/bin/python"  -- ← Your venv path
+        end,
+    },
+}
+
