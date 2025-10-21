@@ -1,3 +1,6 @@
+local home = os.getenv("HOME") or os.getenv("USERPROFILE")
+local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
+
 require("dapui").setup({
     layouts = {
         {
@@ -43,13 +46,13 @@ end
 -- Configure dap for C/C++/Rust
 dap.adapters.gdb = {
     type = 'executable',
-    command = '/nfs/home/<username>/.local/gdb/bin/gdb',
+    command = home .. '/.local/gdb/bin/gdb',
     args = { "--interpreter=dap" }
 }
 
 dap.adapters.cppdbg = {
     type = 'executable',
-    command = '/nfs/home/<username>/.vscode-server/extensions/ms-vscode.cpptools-1.26.3-linux-x64/debugAdapters/bin/OpenDebugAD7',
+    command = home .. '/.vscode-server/extensions/ms-vscode.cpptools-1.26.3-linux-x64/debugAdapters/bin/OpenDebugAD7',
     id = 'cppdbg',
 }
 
@@ -83,49 +86,55 @@ dap.configurations.cpp = {
         type = 'cppdbg',
         request = 'launch',
         cwd = get_project_root(),
-        program = 'ns_dbg',
-        -- args = { "config_file" },
-        -- args = { "config_file" },
+        program = 'nrs_dbg',
         args = { "config_file" },
-        -- args = { "config_file" },
-        -- args = { "config_file" },
         exterminalConsole = true,  -- suppress the warning gdb failed to set controlling terminal
         setupCommands = {
             {
-                description = "Enable pretty-printing for gdb",
-                text = "-enable-pretty-printing",
+                description = 'Enable pretty-printing for gdb',
+                text = '-enable-pretty-printing',
                 ignoreFailures = true,
             },
             {
                 description = 'Load local .gdbinit',
-                text = "source ~/.gdbinit",
+                text = 'source ' .. home .. '/.gdbinit',
                 ignoreFailures = true
             },
             {
-                description = "Set GDB log file",
-                text = "-gdb-set logging file " .. logfile,
+                description = 'Set GDB log file',
+                text = '-gdb-set logging file ' .. logfile,
                 ignoreFailures = true
             },
             {
-                description = "Overwrite log file",
-                text = "set logging overwrite on",
+                description = 'Overwrite log file',
+                text = 'set logging overwrite on',
                 ignoreFailures = true
             },
             {
-                description = "Disable pagination",
-                text = "set pagination off",
+                description = 'Disable pagination',
+                text = 'set pagination off',
                 ignoreFailures = true
             },
             {
-                description = "Show all array elements",
-                text = "set print elements 0",
+                description = 'Show all array elements',
+                text = 'set print elements 0',
                 ignoreFailures = true
             },
             {
-                description = "Trace commands",
-                text = "set trace-commands on",
+                description = 'Trace commands',
+                text = 'set trace-commands on',
                 ignoreFailures = true
             },
+            {
+                description = 'Print current working directory',
+                text = 'pwd',
+                ignoreFailures = true
+            },
+            -- {
+            --     description = 'Load Additional Setting',
+            --     text = 'source ' .. home .. '/path/to/pyprint_mrc_normHSqr.py',
+            --     ignoreFailures = true
+            -- },
         },
     },
     {
@@ -138,15 +147,15 @@ dap.configurations.cpp = {
         end,
         setupCommands = {
             {
-                description = "Enable pretty-printing for gdb",
-                text = "-enable-pretty-printing",
+                description = 'Enable pretty-printing for gdb',
+                text = '-enable-pretty-printing',
                 ignoreFailures = true,
             }
         },
         environment = {
             {
-                name = "DSP_TEST_VECTOR_DIR",
-                value = "/nfs/home/<username>/workspace/t-v-s",
+                name = 'DSP_TEST_VECTOR_DIR',
+                value = home .. '/workspace/t-v-s',
             }
         },
     },
@@ -158,41 +167,46 @@ dap.configurations.cpp = {
         -- program = function()
         --     return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
         -- end,
-        program = "/path/to/binary",
+        program = "/path/to/asip-bin",
         setupCommands = {
             {
-                description = "Enable pretty-printing for gdb",
-                text = "-enable-pretty-printing",
+                description = 'Enable pretty-printing for gdb',
+                text = '-enable-pretty-printing',
                 ignoreFailures = true,
             },
             {
+                description = 'Add VBit Pretty Printer',
+                text = "source ${env:HOME}/opt/ASIP-Pretty-Printer/trv32p5x_chess_pretty_printing.py",
+                ignoreFailures = true
+            },
+            {
                 description = 'Load local .gdbinit',
-                text = "source /path/to/.gdbinit",
+                text = 'source ${env:HOME}/.gdbinit',
                 ignoreFailures = true
             },
             {
-                description = "Set GDB log file",
-                text = "-gdb-set logging file " .. logfile,
+                description = 'Set GDB log file',
+                text = '-gdb-set logging file ' .. logfile,
                 ignoreFailures = true
             },
             {
-                description = "Overwrite log file",
-                text = "set logging overwrite on",
+                description = 'Overwrite log file',
+                text = 'set logging overwrite on',
                 ignoreFailures = true
             },
             {
-                description = "Disable pagination",
-                text = "set pagination off",
+                description = 'Disable pagination',
+                text = 'set pagination off',
                 ignoreFailures = true
             },
             {
-                description = "Show all array elements",
-                text = "set print elements 0",
+                description = 'Show all array elements',
+                text = 'set print elements 0',
                 ignoreFailures = true
             },
             {
-                description = "Trace commands",
-                text = "set trace-commands on",
+                description = 'Trace commands',
+                text = 'set trace-commands on',
                 ignoreFailures = true
             },
         },
@@ -220,7 +234,11 @@ dap.configurations.cpp = {
 }
 
 -- Configure dap for Python
-require("dap-python").setup("~/.virtualenvs/debugpy/bin/python") -- path to python with debugpy
+require("dap-python").setup("~/.virtualenvs/debugpy/bin/python", {
+    rocks = {
+        enabled = true,
+    }
+}) -- path to python with debugpy
 ---
 -- mkdir ~/.virtualenvs
 -- cd ~/.virtualenvs
@@ -230,12 +248,12 @@ require("dap-python").setup("~/.virtualenvs/debugpy/bin/python") -- path to pyth
 
 require('dap').configurations.python = {
     {
-        name = "Launch debugpy",
+        name = 'Launch debugpy',
         type = 'python',
         request = 'launch',
         cwd = get_project_root(),
-        program = "${file}",
-        console = "integratedTerminal",  -- or "externalTerminal" if needed
+        program = '${file}',
+        console = 'integratedTerminal',  -- or 'externalTerminal' if needed
         pythonPath = function()
             return '~/.virtualenvs/debugpy/bin/python'
         end,
@@ -245,12 +263,11 @@ require('dap').configurations.python = {
         type = 'python',
         request = 'launch',
         cwd = get_project_root(),
-        program = "${file}",
-        args = { "-r", "-b" },  -- ← Your script's arguments
-        console = "integratedTerminal",  -- or "externalTerminal" if needed
+        program = '${file}',
+        args = { '-r', '-b' },  -- ← Your script's arguments
+        console = 'integratedTerminal',  -- or 'externalTerminal' if needed
         pythonPath = function()
-            return "/path/to/home/.virtualenvs/debugpy/bin/python"  -- ← Your venv path
+            return '~/.virtualenvs/debugpy/bin/python'  -- ← Your venv path
         end,
     },
 }
-

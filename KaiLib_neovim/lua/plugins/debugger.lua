@@ -4,7 +4,6 @@ return {
         "mfussenegger/nvim-dap",
         dependencies = {
             "nvim-lua/plenary.nvim",
-            "rcarriga/nvim-dap-ui",
         },
     },
 
@@ -13,15 +12,13 @@ return {
         "rcarriga/nvim-dap-ui",
         dependencies = {
             "mfussenegger/nvim-dap",
-            "nvim-neotest/nvim-nio"
-        }
+            "nvim-neotest/nvim-nio",
+        },
     },
 
     -- DAP for Python
     {
         "mfussenegger/nvim-dap-python",
-        dependencies = {
-            "mfussenegger/nvim-dap",
-        },
+        dependencies = { "mfussenegger/nvim-dap", },
     },
 }

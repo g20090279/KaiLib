@@ -16,6 +16,4 @@ require("config.theme")
 require("config.lsp")
 require("config.cmp")
 require("config.file-explorer")
-require("config.statusline")
 require("config.debugger")
-

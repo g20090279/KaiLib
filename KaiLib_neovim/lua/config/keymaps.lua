@@ -87,6 +87,26 @@ km.set('n', '<leader>nn', function()
     end
 end, { desc = "Toggle line number and relative line number" })
 
+-- Keymaps for toggle word wrap
+km.set('n', '<leader>nw', function()
+    if vim.wo.wrap == true then
+        vim.wo.wrap = false
+    else
+        vim.wo.wrap = true
+    end
+end, { desc = "Toggle wrap" })
+
+-- Keymaps for toggle mouse support
+km.set("n", "<leader>nm", function()
+    if vim.opt.mouse:get() == "" then
+        vim.opt.mouse = "a"
+        print("Mouse: Enabled!")
+    else
+        vim.opt.mouse = ""
+        print("Mouse: Disabled!")
+    end
+end, { desc = "Toggle mouse support" })
+
 ------------------------------------------------
 --  Keymaps for DAP (Debug Adapter Protocol)  --
 ------------------------------------------------
