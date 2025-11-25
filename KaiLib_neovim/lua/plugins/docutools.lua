@@ -43,11 +43,16 @@ return {
             elseif sysname == "Linux" then  -- Linux
                 vim.g.vimtex_view_method = "zathura"
             elseif sysname == "Windows_NT" then  -- Windows
-                vim.g.vimtex_view_method = "SumatraPDF"
+                vim.g.vimtex_view_method = "general"
+                vim.g.vimtex_view_general_viewer =  "SumatraPDF"
+                vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
             else  -- Fallback or unsupported OS
                 vim.g.vimtex_view_method = ""
             end
         end
+    },
+    {
+        "norcalli/nvim-colorizer.lua",
     },
     -- {
     --     "3rd/image.nvim",
